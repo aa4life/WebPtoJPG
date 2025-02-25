@@ -1,6 +1,5 @@
 # WebP 轉 JPG 轉檔程式 
-# WebP to JPG Converter 
-# WebPからJPG変換器
+## WebP to JPG Converter / WebPからJPG変換器
 
 ## Introduction 
 這是一個使用 Python 與 Tkinter 建立的圖形介面應用程式，可將指定資料夾中的 .webp 圖片轉換成 .jpg 格式。此應用程式支援多核心平行轉檔，可有效加速轉檔過程。使用者可選擇轉換品質，以及是否保留原始的 .webp 檔案（若選擇保留，新生成的 .jpg 檔案會存放在原始路徑下新建的「jpg」資料夾中）。介面支援繁體中文、英文及日文三種語言。
