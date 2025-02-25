@@ -9,6 +9,7 @@ This is a graphical application built with Python and Tkinter that converts .web
 ## 概要 (日本語)
 本アプリケーションは、Python と Tkinter を使用して作成されたグラフィカルなツールで、指定フォルダ内の .webp 画像を .jpg 形式に変換します。マルチコア並列処理により、変換処理を高速化しています。ユーザーは変換品質を選択し、元の .webp ファイルを保持するかどうかを決定できます（保持する場合、新しく生成された .jpg ファイルは元のディレクトリ内に新規作成される「jpg」フォルダに保存されます）。インターフェースは繁体字中国語、英語、日本語に対応しています。
 
+
 ---
 
 ## 功能 Features / 機能 / 機能
@@ -23,19 +24,40 @@ This is a graphical application built with Python and Tkinter that converts .web
 - **多語言支援 / Multi-language Support / 多言語サポート**  
   介面支援繁體中文、英文及日文。
 
+
 ---
 
 ## 使用方法 Usage / 使い方 / 使用方法
+
+您可以從右側的 Release 分頁下載應用程式直接使用。  
+You can download the application directly from the Release section on the right.  
+右側の Release ページからアプリケーションをダウンロードして、すぐに使用できます。
+
 1. **選擇資料夾 / Select Folder / フォルダを選択**  
-   使用者點選「選擇資料夾」按鈕，選擇包含 .webp 檔案的資料夾。
+   使用者點選「選擇資料夾」按鈕，選擇包含 .webp 檔案的資料夾。  
+   Click the "Browse Folder" button to select the folder containing the .webp files.  
+   「フォルダを選択」ボタンをクリックして、.webp ファイルが含まれるフォルダを選択します。
+
 2. **設定轉檔參數 / Set Conversion Parameters / 変換パラメータを設定**  
-   選擇壓縮品質，並決定是否保留原始 .webp 檔案。
+   選擇壓縮品質，並決定是否保留原始 .webp 檔案。  
+   Choose the desired compression quality and decide whether to keep the original .webp files.  
+   圧縮品質を選択し、元の .webp ファイルを保持するかどうかを決定します。
+
 3. **切換語言 / Choose Language / 言語を選択**  
-   從下拉式選單中選擇介面語言（繁體中文、English、または 日本語）。
+   從下拉式選單中選擇介面語言（繁體中文、English、または 日本語）。  
+   Select the interface language from the dropdown menu (Traditional Chinese, English, or Japanese).  
+   ドロップダウンメニューからインターフェースの言語を選択します（繁体字中国語、英語、または日本語）。
+
 4. **開始轉換 / Start Conversion / 変換開始**  
-   按下醒目的「開始轉換」按鈕後，轉檔開始（轉檔中按鈕會變成紅色，顯示「轉檔中...」/ "Converting..." / "変換中..."）。
+   按下醒目的「開始轉換」按鈕後，轉檔開始（轉檔中按鈕會變成紅色，顯示「轉檔中...」/ "Converting..." / "変換中..."）。  
+   Click the prominent "Start Conversion" button to begin the conversion process (the button will change to red and display "Converting..." / "変換中...").  
+   目立つ「変換開始」ボタンをクリックすると、変換が始まり、ボタンが赤色に変わって「変換中...」と表示されます。
+
 5. **完成提示 / Completion Notice / 完了通知**  
-   轉檔完成後，系統會顯示完成訊息，並恢復按鈕原始樣式。
+   轉檔完成後，系統會顯示完成訊息，並恢復按鈕原始樣式。  
+   Once the conversion is complete, the system will display a completion message and restore the button to its original style.  
+   変換が完了すると、システムは完了メッセージを表示し、ボタンの元のスタイルに戻ります。
+
 
 ---
 
