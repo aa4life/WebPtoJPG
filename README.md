@@ -14,15 +14,29 @@ This is a graphical application built with Python and Tkinter that converts .web
 
 ## 功能 Features / 機能 / 機能
 - **資料夾選擇 / Folder Selection / フォルダ選択**  
-  透過圖形介面選擇包含 .webp 檔案的資料夾。
+  透過圖形介面選擇包含 .webp 檔案的資料夾。  
+  Select the folder that contains the .webp files via a graphical interface.  
+  グラフィカルなインターフェースを使用して、.webp ファイルが含まれるフォルダを選択します。
+
 - **多核心平行轉檔 / Multi-core Parallel Processing / マルチコア並列処理**  
-  利用多核心技術加速圖片轉換。
+  利用多核心技術加速圖片轉換。  
+  Utilize multi-core technology to accelerate image conversion.  
+  マルチコア技術を活用して画像変換を高速化します。
+
 - **壓縮品質選擇 / Compression Quality Options / 圧縮品質選択**  
-  提供低、中、高及極高四種品質選項。
+  提供低、中、高及極高四種品質選項。  
+  Provide four quality options: Low, Medium, High, and Very High.  
+  「低い」、「普通」、「高い」、「最高」の4種類の品質オプションを提供します。
+
 - **原始檔案保留選項 / Option to Keep Original Files / 元ファイル保持オプション**  
-  使用者可決定是否保留原始 .webp 檔案（若保留，轉換後的 .jpg 檔將存放在「jpg」資料夾中）。
+  使用者可決定是否保留原始 .webp 檔案（若保留，轉換後的 .jpg 檔將存放在「jpg」資料夾中）。  
+  Users can decide whether to keep the original .webp files (if kept, the converted .jpg files will be saved in a "jpg" folder).  
+  ユーザーは元の .webp ファイルを保持するかどうかを決定できます（保持する場合、変換後の .jpg ファイルは「jpg」フォルダに保存されます）。
+
 - **多語言支援 / Multi-language Support / 多言語サポート**  
-  介面支援繁體中文、英文及日文。
+  介面支援繁體中文、英文及日文。  
+  The interface supports Traditional Chinese, English, and Japanese.  
+  インターフェースは繁体字中国語、英語、および日本語に対応しています。
 
 
 ---
@@ -63,7 +77,13 @@ You can download the application directly from the Release section on the right.
 
 ## 打包與部署 Packaging and Deployment / パッケージングと展開
 此應用程式可使用 [PyInstaller](https://pyinstaller.readthedocs.io/) 打包成獨立可執行檔。  
-例如，在命令列中執行以下指令（適用於 Windows 與 macOS）：
+例如，在命令列中執行以下指令（適用於 Windows 與 macOS）：  
+
+This application can be packaged into a standalone executable using [PyInstaller](https://pyinstaller.readthedocs.io/).  
+For example, run the following command in the terminal (applicable for Windows and macOS):  
+
+本アプリケーションは [PyInstaller](https://pyinstaller.readthedocs.io/) を使用して、スタンドアロン実行可能ファイルにパッケージ化できます。
+例えば、以下のコマンドをターミナルで実行します（Windows および macOS 用）：
 ```bash
 pyinstaller --onefile --windowed convertWebp.py
 ```
