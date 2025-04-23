@@ -3,7 +3,8 @@ import multiprocessing
 import functools
 import threading
 import tkinter as tk
-from tkinter import messagebox, filedialog
+from tkinter import messagebox, filedialog, font as tkFont
+from tkinter import ttk  # 匯入 ttk 模組
 from PIL import Image
 
 # === 轉換函式 ===
@@ -58,8 +59,9 @@ def conversion_thread(folder_path, quality, keep_webp):
     convert_webp_to_jpg_parallel(folder_path, quality, keep_webp)
     current_lang = language_mapping[lang_var.get()]
     # 轉檔完成後，恢復按鈕樣式 (必須在主執行緒更新 GUI)
-    root.after(0, lambda: convert_button.config(text=translations[current_lang]["start"],
-                                                 bg="#4CAF50", fg="white"))
+    # 轉檔完成後，恢復按鈕樣式 (必須在主執行緒更新 GUI)
+    root.after(0, lambda: convert_button.config(text=translations[current_lang]["start"]))
+    root.after(0, lambda: convert_button.state(['!disabled'])) # 啟用按鈕
     messagebox.showinfo(translations[current_lang]["title"],
                         translations[current_lang]["complete"])
 
@@ -82,9 +84,9 @@ def start_conversion():
     quality_str = quality_var.get()
     quality = quality_map.get(quality_str, 85)
     keep_webp = keep_var.get()
-    # 轉檔開始時，更新按鈕為轉檔中狀態 (紅色)
-    convert_button.config(text=translations[current_lang]["converting"],
-                          bg="red", fg="white")
+    # 轉檔開始時，更新按鈕為轉檔中狀態並禁用
+    convert_button.config(text=translations[current_lang]["converting"])
+    convert_button.state(['disabled']) # 禁用按鈕防止重複點擊
     threading.Thread(target=conversion_thread,
                      args=(folder_path, quality, keep_webp),
                      daemon=True).start()
@@ -99,16 +101,55 @@ def update_ui_language(*args):
     quality_menu['menu'].delete(0, 'end')
     for option in t["quality_options"]:
         quality_menu['menu'].add_command(label=option, command=tk._setit(quality_var, option))
-    if quality_var.get() not in t["quality_options"]:
-        quality_var.set(t["quality_options"][0])
+    # 更新品質下拉選單的選項
+    current_quality = quality_var.get() # 記住當前選擇
+    menu = quality_menu["menu"]
+    menu.delete(0, "end")
+    for option in t["quality_options"]:
+        menu.add_command(label=option, command=lambda value=option: quality_var.set(value))
+    # 嘗試恢復之前的選擇，如果新語言中不存在，則設為第一個選項
+    if current_quality in t["quality_options"]:
+         quality_var.set(current_quality)
+    elif t["quality_options"]:
+         quality_var.set(t["quality_options"][2]) # 預設選 "高" 或 "High" 或 "高い"
+    else:
+         quality_var.set("") # 如果沒有選項
+
     keep_checkbox.config(text=t["keep_checkbox"])
-    convert_button.config(text=t["start"], bg="#4CAF50", fg="white")
+    # 檢查按鈕是否處於禁用狀態 (轉檔中)，如果是，則不改變文字
+    if 'disabled' not in convert_button.state():
+        convert_button.config(text=t["start"])
     language_label.config(text=t["language_label"])
+    # 更新語言下拉選單的顯示文字 (雖然 OptionMenu 不直接支援，但可以這樣更新)
+    # language_menu # ttk.OptionMenu 的文字更新比較麻煩，通常在建立時就固定
 
 # === 主程式 ===
 if __name__ == '__main__':
     multiprocessing.freeze_support()  # Windows 下需要
     root = tk.Tk()
+    root.title("WebP to JPG Converter") # 預設標題
+
+    # --- 設定 ttk 主題 ---
+    style = ttk.Style(root)
+    # 嘗試使用系統可用的較佳主題
+    available_themes = style.theme_names()
+    if "clam" in available_themes:
+        style.theme_use("clam")
+    elif "vista" in available_themes: # Windows
+        style.theme_use("vista")
+    elif "aqua" in available_themes: # macOS
+        style.theme_use("aqua")
+
+    # --- 設定預設字型 ---
+    default_font = tkFont.nametofont("TkDefaultFont")
+    default_font.configure(size=10)
+    root.option_add("*Font", default_font)
+
+    # --- 主框架 ---
+    main_frame = ttk.Frame(root, padding="10 10 10 10")
+    main_frame.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
+    root.columnconfigure(0, weight=1)
+    root.rowconfigure(0, weight=1)
 
     # 定義各語言翻譯字典 (增加了 "converting" 文字)
     translations = {
@@ -157,39 +198,51 @@ if __name__ == '__main__':
     }
     language_mapping = {"繁體中文": "zh", "English": "en", "日本語": "ja"}
 
-    # --- 語言選擇 ---
-    lang_var = tk.StringVar(root)
-    lang_var.set("繁體中文")
-    language_label = tk.Label(root, text="")
-    language_label.grid(row=5, column=0, padx=5, pady=5, sticky="e")
-    language_menu = tk.OptionMenu(root, lang_var, *language_mapping.keys(), command=update_ui_language)
-    language_menu.grid(row=5, column=1, padx=5, pady=5, sticky="w")
+    # --- 介面元件 ---
+    # 資料夾選擇
+    folder_path_label = ttk.Label(main_frame, text="")
+    folder_path_label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
+    folder_path_entry = ttk.Entry(main_frame, width=50)
+    folder_path_entry.grid(row=1, column=0, columnspan=2, padx=5, pady=2, sticky="ew")
+    browse_button = ttk.Button(main_frame, text="", command=browse_folder)
+    browse_button.grid(row=1, column=2, padx=5, pady=2, sticky="w")
 
-    # --- 其他介面元件 ---
-    folder_path_label = tk.Label(root, text="")
-    folder_path_label.grid(row=0, column=0, padx=5, pady=5, sticky="e")
-    folder_path_entry = tk.Entry(root, width=40)
-    folder_path_entry.grid(row=0, column=1, padx=5, pady=5, sticky="w")
-    browse_button = tk.Button(root, text="", command=browse_folder)
-    browse_button.grid(row=0, column=2, padx=5, pady=5, sticky="w")
-
-    quality_label = tk.Label(root, text="")
-    quality_label.grid(row=1, column=0, padx=5, pady=5, sticky="e")
+    # 壓縮品質
+    quality_label = ttk.Label(main_frame, text="")
+    quality_label.grid(row=2, column=0, padx=5, pady=5, sticky="w")
     quality_var = tk.StringVar(root)
-    quality_menu = tk.OptionMenu(root, quality_var, "")
-    quality_menu.grid(row=1, column=1, padx=5, pady=5, sticky="w")
+    quality_menu = ttk.OptionMenu(main_frame, quality_var, "") # 選項會在 update_ui_language 中設定
+    quality_menu.grid(row=3, column=0, padx=5, pady=2, sticky="ew")
 
+    # 保留原始檔選項
     keep_var = tk.BooleanVar(root)
     keep_var.set(False)
-    keep_checkbox = tk.Checkbutton(root, text="", variable=keep_var)
-    keep_checkbox.grid(row=2, column=0, columnspan=3, padx=5, pady=5)
+    keep_checkbox = ttk.Checkbutton(main_frame, text="", variable=keep_var)
+    keep_checkbox.grid(row=4, column=0, columnspan=3, padx=5, pady=10, sticky="w")
 
-    # --- 修改「開始轉換」按鈕使其更明顯 ---
-    convert_button = tk.Button(root, text="", command=start_conversion,
-                               font=("Arial", 16, "bold"),
-                               bg="#4CAF50", fg="white")
-    convert_button.grid(row=3, column=0, columnspan=3, padx=5, pady=10)
+    # 語言選擇
+    language_label = ttk.Label(main_frame, text="")
+    language_label.grid(row=5, column=0, padx=5, pady=5, sticky="w")
+    lang_var = tk.StringVar(root)
+    lang_var.set("繁體中文") # 預設語言
+    language_menu = ttk.OptionMenu(main_frame, lang_var, "繁體中文", *language_mapping.keys(), command=update_ui_language)
+    language_menu.grid(row=6, column=0, padx=5, pady=2, sticky="ew")
 
-    update_ui_language()
+    # 開始轉換按鈕
+    # 使用 ttk.Style 來設定特定按鈕的樣式
+    style.configure("Accent.TButton", font=("Arial", 14, "bold"), padding=10)
+    # style.map("Accent.TButton",
+    #           foreground=[('active', 'white'), ('!disabled', 'white')],
+    #           background=[('active', '#005f5f'), ('!disabled', '#008080')]) # 範例：設定按鈕顏色
+
+    convert_button = ttk.Button(main_frame, text="", command=start_conversion, style="Accent.TButton")
+    convert_button.grid(row=7, column=0, columnspan=3, padx=5, pady=20)
+
+    # 設定 Grid 權重，讓元件可以隨視窗縮放
+    main_frame.columnconfigure(0, weight=1)
+    main_frame.columnconfigure(1, weight=1)
+    # main_frame.columnconfigure(2, weight=0) # 按鈕不需要縮放
+
+    update_ui_language() # 初始化 UI 文字
 
     root.mainloop()
